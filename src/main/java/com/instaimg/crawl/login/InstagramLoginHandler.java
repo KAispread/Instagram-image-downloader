@@ -77,14 +77,6 @@ public class InstagramLoginHandler {
     private String getXIgAppId(String pageSource, String appID) {
         int startIndex = pageSource.indexOf(appID);
         int endIndex = pageSource.indexOf(",", startIndex);
-//        char[] chars = pageSource.substring(startIndex, endIndex).toCharArray();
-//
-//        StringBuilder sb = new StringBuilder();
-//        for (char c : chars) {
-//            if (c >= '0' && c <= '9') {
-//                sb.append(c);
-//            }
-//        }
         return pageSource.substring(startIndex, endIndex).replaceAll("[^0-9]", "");
     }
 }
