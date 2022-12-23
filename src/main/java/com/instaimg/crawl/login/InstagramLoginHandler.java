@@ -1,0 +1,90 @@
+package com.instaimg.crawl.login;
+
+import com.instaimg.crawl.config.UserProperty;
+import com.instaimg.crawl.config.WebProperty;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.time.Duration;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Component
+public class InstagramLoginHandler {
+    private WebDriver driver;
+    private String instagramURI;
+    private final WebProperty webProperties;
+    private final UserProperty userProperties;
+
+    public static final String APP_ID_KEY = "X-IG-App-ID";
+    public static final String SESSION_ID_KEY = "sessionid";
+
+    @Autowired
+    public InstagramLoginHandler(WebProperty webProperty, UserProperty userProperty) {
+        this.webProperties = webProperty;
+        this.userProperties = userProperty;
+    }
+
+    public Map<String, String> getLoginData() throws InterruptedException {
+        login();
+        // 페이지 로딩 대기 시간
+        Thread.sleep(5000);
+
+        Map<String, String> require = new ConcurrentHashMap<>();
+        String sessionid = getSessionId(driver.manage().getCookies());
+        require.put("sessionid", sessionid);
+
+        String AppID = "X-IG-App-ID";
+        String xIgAppId = getXIgAppId(driver.getPageSource(), AppID);
+        require.put(AppID, xIgAppId);
+
+        driver.quit();
+        return require;
+    }
+
+    private void login() {
+        System.setProperty(webProperties.getId(), webProperties.getPath());
+        ChromeOptions options = new ChromeOptions();
+//        options.addArguments("headless");
+
+        driver = new ChromeDriver(options);
+
+        this.instagramURI = "https://www.instagram.com";
+
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        driver.get(instagramURI);
+
+        driver.findElement(By.name("username")).sendKeys(userProperties.getId());
+        driver.findElement(By.name("password")).sendKeys(userProperties.getPw());
+        driver.findElement(By.cssSelector("._acan._aiit._acap._aijb._acas._aj1-")).submit();
+    }
+
+    private String getSessionId(Set<Cookie> cookies) throws RuntimeException{
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("sessionid")) {
+                return cookie.getValue();
+            }
+        }
+        throw new RuntimeException("sessionid 를 가져오지 못했습니다.");
+    }
+
+    private String getXIgAppId(String pageSource, String appID) {
+        int startIndex = pageSource.indexOf(appID);
+        int endIndex = pageSource.indexOf(",", startIndex);
+//        char[] chars = pageSource.substring(startIndex, endIndex).toCharArray();
+//
+//        StringBuilder sb = new StringBuilder();
+//        for (char c : chars) {
+//            if (c >= '0' && c <= '9') {
+//                sb.append(c);
+//            }
+//        }
+        return pageSource.substring(startIndex, endIndex).replaceAll("[^0-9]", "");
+    }
+}
