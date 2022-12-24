@@ -8,6 +8,18 @@ group = 'com.instaimg'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+jar {
+	manifest {
+		attributes ('Main-Class': 'com.instaimg.crawl.MainApplication')
+	}
+}
+
+tasks {
+	processResources {
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	}
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -20,21 +32,16 @@ repositories {
 
 dependencies {
 	implementation 'org.jsoup:jsoup:1.15.3'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 	implementation 'org.seleniumhq.selenium:selenium-java:4.7.1'
 	implementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.13'
 
-
-
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
