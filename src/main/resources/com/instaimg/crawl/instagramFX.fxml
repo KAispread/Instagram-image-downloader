@@ -30,11 +30,11 @@
 
         <Label text="닉네임 : " GridPane.columnIndex="0" GridPane.rowIndex="1">
         </Label>
-        <TextField fx:id="nickname" prefHeight="40" text="kiw.112" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <TextField fx:id="nickname" prefHeight="40" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
         <Label text="다운받을 폴더 경로 : " GridPane.columnIndex="0" GridPane.rowIndex="2">
         </Label>
-        <TextField fx:id="filePath" prefHeight="40" text="C:\Users\Kracken\Desktop\image" GridPane.columnIndex="1"
+        <TextField fx:id="filePath" prefHeight="40" GridPane.columnIndex="1"
                    GridPane.rowIndex="2"/>
 
         <Label text="이미지 개수(생략 가능):" GridPane.columnIndex="0" GridPane.rowIndex="3">
@@ -50,7 +50,7 @@
             </GridPane.margin>
         </Button>
 
-        <TextArea fx:id="process" prefHeight="60" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="5"
+        <TextArea fx:id="process" prefHeight="60" text="Result Field" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="5"
                   minHeight="150"/>
     </children>
     <rowConstraints>
