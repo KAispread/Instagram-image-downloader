@@ -1,9 +1,9 @@
 package com.instaimg.crawl.controller;
 
 import com.instaimg.crawl.json.CustomJsonParser;
+import javafx.scene.control.TextArea;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,19 +25,40 @@ public class ImgUrlController {
     private final String IMAGE_PREFIX = "IMAGE";
     private final int MAX_IMAGE = 15;
 
-//    @Autowired
-//    public ImgUrlController(SessionManager sessionManager) {
-//        this.sessionManager = sessionManager;
-//        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-//                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
-//                .build();
-//        this.webClient = WebClient.builder()
-//                .baseUrl("https://www.instagram.com")
-//                .exchangeStrategies(exchangeStrategies)
-//                .build();
-//    }
+    public boolean saveImgInLocal(String nickname, String filePath, int imgCount, TextArea process) throws ParseException, InterruptedException, IOException {
+        setTextArea(process, "======" + nickname + ": image source parsing======");
+        List<String> imageUrl = getImageURLs(nickname);
+        setTextArea(process, "Total number of images : " + imageUrl.size());
+        if (imageUrl.size() == 0) {
+            FXController.alert("오류", "다운로드할 이미지가 없습니다");
+            return false;
+        }
 
-    public void getProfileImgSourceV2(String nickname, String filePath, int imgCount) throws ParseException, InterruptedException, IOException {
+        setTextArea(process, "============PARSING IS DONE=============" + "\n");
+        setTextArea(process, "======START DOWNLOADING THE IMAGES======");
+        int count = 1;
+        int downCount = Math.min(imgCount, imageUrl.size());
+        for (String url : imageUrl) {
+            try {
+                saveImage(url, filePath, count);
+            } catch (IOException ioException) {
+                FXController.alert("오류", "잘못된 폴더 경로입니다.");
+                return false;
+            }
+
+            if (count >= 10 && count % 10 == 0) {
+                setTextArea(process, count + " images have been downloaded");
+            }
+            count++;
+            if (count > downCount) {
+                break;
+            }
+        }
+        setTextArea(process, "============DOWNLOAD COMPLETE===========");
+        return true;
+    }
+
+    private List<String> getImageURLs(String nickname) throws ParseException, InterruptedException, IOException {
         List<String> imageUrl = new ArrayList<>();
         String nextMaxId = "";
         int max = MAX_IMAGE;
@@ -64,36 +85,18 @@ public class ImgUrlController {
             }
             break;
         }
-
-        int count = 1;
-        for (String url : imageUrl) {
-            saveImage(url, filePath, count);
-            count++;
-            if (count > imgCount) {
-                break;
-            }
-        }
+        return imageUrl;
     }
 
     private void saveImage(final String givenUrl, final String filePath, int count) throws IOException, InterruptedException {
         URL url = new URL(givenUrl);
         BufferedImage image = ImageIO.read(url);
-        ImageIO.write(image, "png", new File(String.format("%s-%d.png", filePath + IMAGE_PREFIX, count)));
+        ImageIO.write(image, "png", new File(String.format("%s-%d.png", filePath + File.separator + IMAGE_PREFIX, count)));
         Thread.sleep(500);
     }
 
-    public JSONObject sge() throws ParseException, IOException {
-        String jsonData = Jsoup.connect("https://www.instagram.com/api/v1/feed/user/minn.__.ju/username/?count=100")
-                .userAgent(USER_AGENT)
-                .timeout(3000)
-                .ignoreContentType(true)
-                .cookie("sessionid", "value")
-                .header("Accept", "application/json")
-                .header("x-ig-app-id", "value")
-                .method(Connection.Method.GET)
-                .execute().body();
-
-        JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(jsonData);
+    private void setTextArea(TextArea process, String text) {
+        String ordinalText = process.getText();
+        process.setText(ordinalText + "\n" + text);
     }
 }

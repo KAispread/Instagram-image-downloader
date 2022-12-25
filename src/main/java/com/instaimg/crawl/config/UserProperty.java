@@ -4,14 +4,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 @Setter
 @Getter
-@Component
+//@Component
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ConfigurationProperties("user")
+//@ConfigurationProperties("user")
 public class UserProperty {
     private String id;
     private String pw;

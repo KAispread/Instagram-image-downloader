@@ -7,15 +7,13 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
+//@Component
 public class InstagramLoginHandler {
     private WebDriver driver;
     private String instagramURI;
@@ -25,7 +23,7 @@ public class InstagramLoginHandler {
     public static final String APP_ID_KEY = "X-IG-App-ID";
     public static final String SESSION_ID_KEY = "sessionid";
 
-    @Autowired
+//    @Autowired
     public InstagramLoginHandler(WebProperty webProperty, UserProperty userProperty) {
         this.webProperties = webProperty;
         this.userProperties = userProperty;

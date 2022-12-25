@@ -1,0 +1,16 @@
+.text-field {
+    -fx-font-size: 10pt;
+    -fx-font-family: D2Coding;
+}
+
+.text-area {
+    -fx-font-size: 10pt;
+    -fx-font-family: D2Coding;
+}
+
+title .label {
+    -fx-font-family: "Raleway-VariableFont_wght";
+}
+
+
+
