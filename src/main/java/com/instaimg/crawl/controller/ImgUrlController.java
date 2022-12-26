@@ -18,23 +18,27 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.instaimg.crawl.controller.FXController.alert;
+import static com.instaimg.crawl.controller.FXController.setTextArea;
+
 @Getter
 @NoArgsConstructor
 public class ImgUrlController {
-    private final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
-    private final String IMAGE_PREFIX = "IMAGE";
-    private final int MAX_IMAGE = 15;
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
+    private static final String IMAGE_PREFIX = "IMAGE";
+    private static final int MAX_IMAGE = 15;
 
-    public boolean saveImgInLocal(String nickname, String filePath, int imgCount, TextArea process) throws ParseException, InterruptedException, IOException {
-        setTextArea(process, "======" + nickname + ": image source parsing======");
+    public static boolean saveImgInLocal(String nickname, String filePath, int imgCount, TextArea process) throws ParseException, InterruptedException, IOException {
+        setTextArea(process,"======" + nickname + ": image source parsing======");
         List<String> imageUrl = getImageURLs(nickname);
-        setTextArea(process, "Total number of images : " + imageUrl.size());
         if (imageUrl.size() == 0) {
-            FXController.alert("오류", "다운로드할 이미지가 없습니다");
+            setTextArea(process,"존재하지 않는 닉네임이거나 비공개 계정입니다.");
+            alert("오류", "다운로드할 이미지가 없습니다");
             return false;
         }
+        setTextArea(process,"Total number of images : " + imageUrl.size());
 
-        setTextArea(process, "============PARSING IS DONE=============" + "\n");
+        setTextArea(process,"============PARSING IS DONE=============" + "\n");
         setTextArea(process, "======START DOWNLOADING THE IMAGES======");
         int count = 1;
         int downCount = Math.min(imgCount, imageUrl.size());
@@ -42,10 +46,9 @@ public class ImgUrlController {
             try {
                 saveImage(url, filePath, count);
             } catch (IOException ioException) {
-                FXController.alert("오류", "잘못된 폴더 경로입니다.");
+                alert("오류", "잘못된 폴더 경로입니다.");
                 return false;
             }
-
             if (count >= 10 && count % 10 == 0) {
                 setTextArea(process, count + " images have been downloaded");
             }
@@ -58,7 +61,7 @@ public class ImgUrlController {
         return true;
     }
 
-    private List<String> getImageURLs(String nickname) throws ParseException, InterruptedException, IOException {
+    private static List<String> getImageURLs(String nickname) throws ParseException, InterruptedException, IOException {
         List<String> imageUrl = new ArrayList<>();
         String nextMaxId = "";
         int max = MAX_IMAGE;
@@ -88,15 +91,10 @@ public class ImgUrlController {
         return imageUrl;
     }
 
-    private void saveImage(final String givenUrl, final String filePath, int count) throws IOException, InterruptedException {
+    private static void saveImage(final String givenUrl, final String filePath, final int count) throws IOException, InterruptedException {
         URL url = new URL(givenUrl);
         BufferedImage image = ImageIO.read(url);
         ImageIO.write(image, "png", new File(String.format("%s-%d.png", filePath + File.separator + IMAGE_PREFIX, count)));
         Thread.sleep(500);
-    }
-
-    private void setTextArea(TextArea process, String text) {
-        String ordinalText = process.getText();
-        process.setText(ordinalText + "\n" + text);
     }
 }

@@ -1,15 +1,14 @@
 package com.instaimg.crawl.controller;
 
 import com.instaimg.crawl.MainApplication;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -22,35 +21,38 @@ public class FXController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        MainApplication main = new MainApplication();
     }
 
     @FXML
     private void downloadButton(ActionEvent event) {
-        boolean downFlag;
-        try {
-            downFlag = MainApplication.saveImages(process, nickname.getText(), filePath.getText(), imgCount.getText());
-        } catch (Exception e) {
-            alert("오류", "잘못된 요청입니다");
-            return;
-        }
-
-        if (downFlag) {
-            notify("다운로드 완료", "이미지 다운로드가 완료되었습니다");
-        }
+        MainApplication application = new MainApplication(nickname.getText(), filePath.getText(), imgCount.getText(), process);
+        application.setDaemon(true);
+        application.setName("Download Thread");
+        application.start();
     }
 
     public static void notify(String title, String headerText) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(headerText);
+            alert.showAndWait();
+        });
     }
 
     public static void alert(String title, String headerText) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(headerText);
+            alert.showAndWait();
+        });
+    }
+
+    public static void setTextArea(TextArea process, String text) {
+        Platform.runLater(() -> {
+            String ordinalText = process.getText();
+            process.setText(ordinalText + "\n" + text);
+        });
     }
 }
