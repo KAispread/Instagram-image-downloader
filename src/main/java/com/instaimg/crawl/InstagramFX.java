@@ -17,7 +17,10 @@ public class InstagramFX  extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("instagramFX.fxml")));
         primaryStage.setTitle("Instagram Downloader");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        Scene scene = new Scene(root, 800, 600);
+        scene.getStylesheets()
+                .add(Objects.requireNonNull(getClass().getClassLoader().getResource("css/style.css")).toExternalForm());
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 }
