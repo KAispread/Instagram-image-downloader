@@ -62,4 +62,10 @@ public class FXController implements Initializable {
             process.setText(ordinalText + "\n" + text);
         });
     }
+
+    public static void clearTextArea(TextArea process) {
+        Platform.runLater(() -> {
+            process.setText("Please try again");
+        });
+    }
 }
