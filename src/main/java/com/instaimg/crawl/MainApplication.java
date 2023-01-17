@@ -24,6 +24,9 @@ public class MainApplication extends Thread {
             if (ImgUrlController.saveImgInLocal(nickname, filePath, imgCount, process)) {
                 FXController.notify("다운로드 완료", "이미지 다운로드가 완료되었습니다");
             }
+        } catch (InterruptedException i) {
+            FXController.notify("중지", "다운로드가 중지되었습니다.");
+            FXController.setTextArea(process, "***STOP DOWNLOAD***");
         } catch (Exception e) {
             FXController.alert("오류", "잘못된 요청입니다");
         }

@@ -19,16 +19,23 @@ public class FXController implements Initializable {
     @FXML
     TextArea process;
 
+    private MainApplication application;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }
 
     @FXML
     private void downloadButton(ActionEvent event) {
-        MainApplication application = new MainApplication(nickname.getText(), filePath.getText(), imgCount.getText(), process);
+        application = new MainApplication(nickname.getText(), filePath.getText(), imgCount.getText(), process);
         application.setDaemon(true);
         application.setName("Download Thread");
         application.start();
+    }
+
+    @FXML
+    private void stopButton(ActionEvent event) {
+        application.interrupt();
     }
 
     public static void notify(String title, String headerText) {
