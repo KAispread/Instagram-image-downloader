@@ -1,16 +1,17 @@
 .text-field {
     -fx-font-size: 10pt;
-    -fx-font-family: D2Coding;
+    -fx-font-family: "D2Coding";
 }
 
 .text-area {
     -fx-font-size: 10pt;
-    -fx-font-family: D2Coding;
+    -fx-font-family: "D2Coding";
+}
+
+#stopButton {
+    -fx-background-color: #ffb700;
 }
 
 title .label {
     -fx-font-family: "Raleway-VariableFont_wght";
 }
-
-
-
