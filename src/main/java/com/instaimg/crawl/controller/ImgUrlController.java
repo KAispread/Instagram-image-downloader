@@ -18,8 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.instaimg.crawl.controller.FXController.alert;
-import static com.instaimg.crawl.controller.FXController.setTextArea;
+import static com.instaimg.crawl.controller.FXController.*;
 
 @Getter
 @NoArgsConstructor
@@ -31,15 +30,15 @@ public class ImgUrlController {
     public static boolean saveImgInLocal(String nickname, String filePath, int imgCount, TextArea process) throws ParseException, InterruptedException, IOException {
         setTextArea(process,"======" + nickname + ": image source parsing======");
         List<String> imageUrl = getImageURLs(nickname);
-        if (imageUrl.size() == 0) {
-            setTextArea(process,"존재하지 않는 닉네임이거나 비공개 계정입니다.");
-            alert("오류", "다운로드할 이미지가 없습니다");
+
+        if (!validateImgUrl(imageUrl.size(), process)) {
             return false;
         }
-        setTextArea(process,"Total number of images : " + imageUrl.size());
 
+        setTextArea(process,"Total number of images : " + imageUrl.size());
         setTextArea(process,"============PARSING IS DONE=============" + "\n");
         setTextArea(process, "======START DOWNLOADING THE IMAGES======");
+
         int count = 1;
         int downCount = Math.min(imgCount, imageUrl.size());
         for (String url : imageUrl) {
@@ -47,6 +46,7 @@ public class ImgUrlController {
                 saveImage(url, filePath, count);
             } catch (IOException ioException) {
                 alert("오류", "잘못된 폴더 경로입니다.");
+                clearTextArea(process);
                 return false;
             }
             if (count >= 10 && count % 10 == 0) {
@@ -61,6 +61,15 @@ public class ImgUrlController {
         return true;
     }
 
+    private static boolean validateImgUrl(int size, TextArea process) {
+        if (size == 0) {
+            setTextArea(process,"존재하지 않는 닉네임이거나 비공개 계정입니다.");
+            alert("오류", "다운로드할 이미지가 없습니다");
+            return false;
+        }
+        return true;
+    }
+
     private static List<String> getImageURLs(String nickname) throws ParseException, InterruptedException, IOException {
         List<String> imageUrl = new ArrayList<>();
         String nextMaxId = "";
@@ -70,9 +79,9 @@ public class ImgUrlController {
                     .userAgent(USER_AGENT)
                     .timeout(100000)
                     .ignoreContentType(true)
-                    .cookie("sessionid", "value")
+                    .cookie("sessionid", "56999113234%3AN95grMEAoBjzDN%3A3%3AAYfd1vZWhuYtYJBOFYD0Lfz6BkJUJrzvYD1UylHISw")
                     .header("Accept", "application/json")
-                    .header("x-ig-app-id", "value")
+                    .header("x-ig-app-id", "936619743392459")
                     .method(Connection.Method.GET)
                     .execute().body();
 
