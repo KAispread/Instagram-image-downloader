@@ -4,7 +4,7 @@ public enum JsonAttr {
     SINGLE_IMG_START_KEY("image_versions2"),
     MULTI_IMG_START_KEY("carousel_media");
 
-    private String key;
+    private final String key;
 
     JsonAttr(String key) {
         this.key = key;
