@@ -79,9 +79,9 @@ public class ImgUrlController {
                     .userAgent(USER_AGENT)
                     .timeout(100000)
                     .ignoreContentType(true)
-                    .cookie("sessionid", "56999113234%3AN95grMEAoBjzDN%3A3%3AAYfd1vZWhuYtYJBOFYD0Lfz6BkJUJrzvYD1UylHISw")
+                    .cookie("sessionid", value)
                     .header("Accept", "application/json")
-                    .header("x-ig-app-id", "936619743392459")
+                    .header("x-ig-app-id", value)
                     .method(Connection.Method.GET)
                     .execute().body();
 
