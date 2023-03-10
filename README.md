@@ -87,6 +87,13 @@ https://crazykim2.tistory.com/478
 ![image](https://user-images.githubusercontent.com/99247279/209557621-b3916091-4a33-4058-ad6c-f9c1c95f2def.png)
 - 잠시 기다리면 다음과 같이 안내문구와 함께 이미지 다운로드가 완료됩니다.
 
+&nbsp;
+### ❗❗ ++ 다운로드 중단기능 추가
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/99247279/224315368-f7c948ea-b226-436b-81eb-fcfedf9615f1.png" width="600" />
+</p>
+이미지 다운로드 중에 STOP 버튼을 클릭하면 다운로드를 중단합니다.
+
 
 &nbsp;
 # Reference
