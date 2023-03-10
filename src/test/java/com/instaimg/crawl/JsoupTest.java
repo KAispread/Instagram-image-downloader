@@ -35,20 +35,20 @@ class JsoupTest {
         System.out.println("accept = " + accept);
     }
 
-//    @Test
-//    void instaProfileJson() throws ParseException {
-//        String jsonData = Objects.requireNonNull(webClient.get()
-//                .uri("/api/v1/feed/user/kiw.112/username/?count=100")
-//                .accept(MediaType.APPLICATION_JSON)
-//                .header("x-ig-app-id", "value")
-//                .cookie("sessionId", "value")
-//                .retrieve()
-//                .toEntity(String.class).block()).getBody();
-//        JSONParser parser = new JSONParser();
-//        JSONObject parse = (JSONObject) parser.parse(jsonData);
-//
-//        System.out.println(parse.toJSONString());
-//    }
+    @Test
+    void instaProfileJson() throws ParseException {
+        String jsonData = Objects.requireNonNull(webClient.get()
+                .uri("/api/v1/feed/user/kiw.112/username/?count=100")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("x-ig-app-id", "value")
+                .cookie("sessionId", "value")
+                .retrieve()
+                .toEntity(String.class).block()).getBody();
+        JSONParser parser = new JSONParser();
+        JSONObject parse = (JSONObject) parser.parse(jsonData);
+
+        System.out.println(parse.toJSONString());
+    }
 
     @Test
     void name() {
