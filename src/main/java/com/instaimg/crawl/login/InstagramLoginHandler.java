@@ -13,21 +13,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-//@Component
 public class InstagramLoginHandler {
     private WebDriver driver;
     private String instagramURI;
-    private final WebProperty webProperties;
-    private final UserProperty userProperties;
 
     public static final String APP_ID_KEY = "X-IG-App-ID";
     public static final String SESSION_ID_KEY = "sessionid";
-
-//    @Autowired
-    public InstagramLoginHandler(WebProperty webProperty, UserProperty userProperty) {
-        this.webProperties = webProperty;
-        this.userProperties = userProperty;
-    }
 
     public Map<String, String> getLoginData() throws InterruptedException {
         login();
@@ -47,19 +38,17 @@ public class InstagramLoginHandler {
     }
 
     private void login() {
-        System.setProperty(webProperties.getId(), webProperties.getPath());
+        System.setProperty("webdriver.chrome.driver", "C:/chromeDriver/chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
-//        options.addArguments("headless");
 
         driver = new ChromeDriver(options);
-
         this.instagramURI = "https://www.instagram.com";
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.get(instagramURI);
 
-        driver.findElement(By.name("username")).sendKeys(userProperties.getId());
-        driver.findElement(By.name("password")).sendKeys(userProperties.getPw());
+        driver.findElement(By.name("username")).sendKeys("kiwee012");
+        driver.findElement(By.name("password")).sendKeys("xxibgdr5658!");
         driver.findElement(By.cssSelector("._acan._aiit._acap._aijb._acas._aj1-")).submit();
     }
 
