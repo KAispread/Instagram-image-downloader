@@ -3,6 +3,7 @@ plugins {
 	id 'application'
 	id 'org.openjfx.javafxplugin' version '0.1.0'
 	id 'org.beryx.jlink' version '3.0.1'
+	id 'org.gradlex.extra-java-module-info' version '1.9'
 }
 
 group = 'com.instaimg'
@@ -25,6 +26,7 @@ javafx {
 
 application {
 	mainClass = 'com.instaimg.crawl.InstagramFX'
+	mainModule = 'com.instaimg.crawl'
 }
 
 tasks {
@@ -49,16 +51,20 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// json-simple 에 Automatic-Module-Name 을 추가하여 JPMS 모듈로 인식시킴
+// failOnMissingModuleInfo = false 로 나머지 비모듈 jar 는 unnamed module 로 처리
+extraJavaModuleInfo {
+	failOnMissingModuleInfo.set(false)
+	automaticModule('com.googlecode.json-simple:json-simple', 'json.simple')
+}
+
 jlink {
 	options = ['--strip-debug', '--compress=2', '--no-header-files', '--no-man-pages']
 	launcher {
 		name = 'InstagramDownloader'
-		jvmArgs = [
-			'--add-opens', 'javafx.graphics/com.sun.javafx.application=ALL-UNNAMED',
-			'--add-reads', 'org.jsoup=ALL-UNNAMED'
-		]
+		jvmArgs = ['--add-opens', 'javafx.graphics/com.sun.javafx.application=ALL-UNNAMED']
 	}
-	forceMerge('json-simple', 'annotations', 'kotlin')
+	forceMerge('kotlin-stdlib', 'annotations')
 	jpackage {
 		installerType = 'msi'
 		imageName = 'InstagramDownloader'
