@@ -8,7 +8,7 @@ internal object AppConstants {
 
     const val IMAGE_PREFIX = "IMAGE"
     const val IMAGES_PER_REQUEST = 100
-    const val MAX_PAGINATION = 15
+    const val MAX_PAGINATION = 50
     const val API_DELAY_MS = 1_000L
     const val CONCURRENT_DOWNLOADS = 5
 }

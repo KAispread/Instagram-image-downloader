@@ -10,26 +10,39 @@ import org.json.simple.parser.JSONParser
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 
+data class FetchResult(
+    val urls: List<String>,
+    val pagesFetched: Int,
+    val hitPageLimit: Boolean
+)
+
 class InstagramApiClient(private val sessionId: String = AppConstants.SESSION_ID) {
 
-    suspend fun fetchImageUrls(nickname: String): List<String> {
+    suspend fun fetchImageUrls(
+        nickname: String,
+        onPageFetched: (pageNum: Int, pageCount: Int, totalSoFar: Int) -> Unit = { _, _, _ -> }
+    ): FetchResult {
         val urls = mutableListOf<String>()
         var nextMaxId = ""
         var remaining = AppConstants.MAX_PAGINATION
+        var pageNum = 0
 
         while (remaining > 0) {
             val page = withContext(Dispatchers.IO) { fetchPage(nickname, nextMaxId) }
-            urls += CustomJsonParser.getImageUrl(page)
+            val pageUrls = CustomJsonParser.getImageUrl(page)
+            urls += pageUrls
+            pageNum++
+            onPageFetched(pageNum, pageUrls.size, urls.size)
 
             if (page.containsKey("next_max_id")) {
                 nextMaxId = page["next_max_id"].toString()
                 remaining--
                 delay(AppConstants.API_DELAY_MS)
             } else {
-                break
+                return FetchResult(urls, pageNum, hitPageLimit = false)
             }
         }
-        return urls
+        return FetchResult(urls, pageNum, hitPageLimit = true)
     }
 
     private fun fetchPage(nickname: String, maxId: String): JSONObject {

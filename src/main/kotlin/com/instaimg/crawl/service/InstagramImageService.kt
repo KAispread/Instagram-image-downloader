@@ -22,19 +22,25 @@ class InstagramImageService(
     ) {
         listener.onMessage("======$nickname: image source parsing======")
 
-        val imageUrls = apiClient.fetchImageUrls(nickname)
+        val result = apiClient.fetchImageUrls(nickname) { pageNum, pageCount, totalSoFar ->
+            listener.onMessage("페이지 $pageNum 파싱 완료 - ${pageCount}건 (누계: ${totalSoFar}건)")
+        }
 
-        if (imageUrls.isEmpty()) {
+        if (result.urls.isEmpty()) {
             listener.onMessage("존재하지 않는 닉네임이거나 비공개 계정입니다.")
             listener.onError("오류", "다운로드할 이미지가 없습니다")
             return
         }
 
-        listener.onMessage("Total number of images : ${imageUrls.size}")
+        listener.onMessage("총 ${result.pagesFetched}페이지 파싱 완료")
+        if (result.hitPageLimit) {
+            listener.onMessage("(최대 페이지 수(${AppConstants.MAX_PAGINATION})에 도달했습니다. 실제 이미지가 더 많을 수 있습니다.)")
+        }
+        listener.onMessage("Total number of images : ${result.urls.size}")
         listener.onMessage("============PARSING IS DONE=============\n")
         listener.onMessage("======START DOWNLOADING THE IMAGES======")
 
-        val targetUrls = imageUrls.take(maxCount)
+        val targetUrls = result.urls.take(maxCount)
         val semaphore = Semaphore(AppConstants.CONCURRENT_DOWNLOADS)
         val downloadedCount = AtomicInteger(0)
 
