@@ -9,42 +9,40 @@
 단순히 입력란에 닉네임과 폴더 경로만 입력하면 해당 닉네임에 대한 인스타그램 이미지를 다운로드합니다.
 
 &nbsp;
-주의하실 점은 비공개 계정에 대해서는 이미지 다운로드가 불가능하며 최근 500개의 게시물까지만 이미지 다운로드가 가능합니다. 
-또한, 자바 11 이상의 버전이 프로그램 구동에 필요합니다.
+주의하실 점은 비공개 계정에 대해서는 이미지 다운로드가 불가능하며 최근 **1,500개**의 게시물까지만 이미지 다운로드가 가능합니다.
 
 &nbsp;
 ## 📌준비물
-- JAVA 11 (jdk 11) 이상, JAVA_HOME 이나 PATH 환경변수 설정까지 되어있어야 합니다.
+- **별도의 Java 설치가 필요하지 않습니다.** MSI 설치 파일에 실행에 필요한 JRE가 포함되어 있습니다.
 
-본 프로그램은 jdk 11 버전에서 javaFX UI로 구현한 순수 자바 프로그램입니다. 따라서 프로그램 구동을 위해 자바 11 이상(jdk 11) 이 설치되어있어야 합니다.
-exe 프로그램이 **%JAVA_HOME%** 또는 **%PATH%** 경로의 jdk 환경에서 구동되기 때문에 다음과 같이 환경변수 설정까지 해주셔야합니다.
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/99247279/209555711-8540cd0f-dbe7-4604-9694-13018a9346ff.png" width="400" />
-</p>
-
-&nbsp;
-자바 11 설치 및 환경 변수 설정에 대한 방법은 잘 정리된 포스팅이 있어 아래에 첨부합니다.
-https://crazykim2.tistory.com/478
+본 프로그램은 **Kotlin** + **JavaFX 17** 로 구현한 Windows 데스크탑 애플리케이션입니다.
+jpackage를 통해 JRE를 번들링한 MSI 설치 파일을 제공하므로 Java를 별도로 설치할 필요가 없습니다.
 
 &nbsp;
 ## 📌다운로드
-🖇LINK -> [instagram downloader - 다운로드](https://github.com/KAispread/Instagram-image-downloader/releases/download/v0.0.1/v0.0.1_Instagram_downloader.zip)   
+
+GitHub Actions 를 통해 master branch 에 변경사항이 push 될 때마다 MSI 설치 파일이 자동으로 빌드됩니다.
+
+최신 MSI 파일은 아래에서 다운로드할 수 있습니다:
+
+🖇LINK -> [Actions - Build MSI](https://github.com/KAispread/Instagram-image-downloader/actions/workflows/build-msi.yml)
+
+위 링크에서 가장 최근의 성공한 워크플로우를 선택한 뒤, **Artifacts** 섹션에서 `InstagramDownloader-{번호}` 파일을 다운로드합니다.
+압축을 풀면 `InstagramDownloader-1.0.0.msi` 설치 파일이 있습니다. 실행하면 설치가 진행됩니다.
 
 &nbsp;
 ## 💡사용방법
 
-위 링크에서 프로그램을 다운받은 후, 압축을 풀고 v0.0.1Instagram_downloader.exe 를 실행합니다.
+MSI 설치 파일을 실행하여 프로그램을 설치한 후, 시작 메뉴에서 **InstagramDownloader** 를 실행합니다.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/99247279/209555919-0fe611bd-b90a-401a-b79e-de179b03f02a.png" width="700" />
 </p>
 
-위 링크에서 프로그램을 다운받은 후, 압축을 풀고 v0.0.1Instagram_downloader.exe 를 실행합니다. 
-
 > 입력 공간 설명
 - 1 - 닉네임 : 이미지를 다운받을 인스타그램 닉네임
 - 2 - 다운받을 폴더 경로 : 이미지를 저장할 폴더 경로
-- 3 - 이미지 개수 : 최대 이미지 개수를 설정합니다. **생략시 최대 500개의 게시물에 대한 이미지 다운로드를 시도합니다.**
+- 3 - 이미지 개수 : 최대 이미지 개수를 설정합니다. **생략시 최대 1,500개의 게시물에 대한 이미지 다운로드를 시도합니다.**
 
 &nbsp;
 ### 1. 닉네임
@@ -64,7 +62,6 @@ https://crazykim2.tistory.com/478
 - 이미지가 저장될 폴더 경로를 지정합니다.
 - 위 사진과 같이 폴더 경로를 클릭한 후 복사 - 붙여넣기 합니다.
 
-
 &nbsp;
 ### 3. 이미지 개수
 <p align="center">
@@ -72,9 +69,8 @@ https://crazykim2.tistory.com/478
 </p>
 
 - 최대 이미지 개수를 지정합니다.
-- 입력란 생략 시, 최대 500개의 게시물에 대한 모든 이미지를 다운로드 시도합니다.
+- 입력란 생략 시, 최대 1,500개의 게시물에 대한 모든 이미지를 다운로드 시도합니다.
 - (예제의 경우, 가장 최근부터 100장까지의 이미지를 다운로드합니다)
-
 
 &nbsp;
 ### 🎯 다운로드
@@ -88,12 +84,20 @@ https://crazykim2.tistory.com/478
 - 잠시 기다리면 다음과 같이 안내문구와 함께 이미지 다운로드가 완료됩니다.
 
 &nbsp;
-### ❗❗ ++ 다운로드 중단기능 추가
+### ❗❗ ++ 다운로드 중단기능
 <p align="center">
   <img src="https://user-images.githubusercontent.com/99247279/224315368-f7c948ea-b226-436b-81eb-fcfedf9615f1.png" width="600" />
 </p>
 이미지 다운로드 중에 STOP 버튼을 클릭하면 다운로드를 중단합니다.
 
+&nbsp;
+# Tech Stack
+- **Kotlin** 2.0.21
+- **JavaFX** 17
+- **Gradle** 8.5
+- **Jsoup** 1.15.3 (HTTP 통신)
+- **json-simple** 1.1.1 (JSON 파싱)
+- **GitHub Actions** (MSI 자동 빌드)
 
 &nbsp;
 # Reference
@@ -101,4 +105,3 @@ https://crazykim2.tistory.com/478
 - https://openjfx.io/openjfx-docs/#gradle -> gradle JavaFX
 - https://jsoup.org/cookbook/extracting-data/dom-navigation -> Jsoup
 - https://docs.oracle.com/javase/7/docs/api/javax/imageio/ImageIO.html -> ImageIO
-- https://www.selenium.dev/ -> Selenium
