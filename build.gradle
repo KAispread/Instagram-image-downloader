@@ -1,3 +1,7 @@
+import org.gradle.internal.os.OperatingSystem
+
+def currentOs = OperatingSystem.current()
+
 plugins {
 	id 'org.jetbrains.kotlin.jvm' version '2.0.21'
 	id 'application'
@@ -66,15 +70,24 @@ jlink {
 	}
 	forceMerge('kotlin-stdlib', 'annotations')
 	jpackage {
-		installerType = 'msi'
 		imageName = 'InstagramDownloader'
 		appVersion = '1.0.0'
 		vendor = 'com.instaimg'
-		installerOptions = [
-			'--win-dir-chooser',
-			'--win-menu',
-			'--win-shortcut',
-			'--description', 'Instagram Image Downloader'
-		]
+
+		if (currentOs.isWindows()) {
+			installerType = 'msi'
+			installerOptions = [
+				'--win-dir-chooser',
+				'--win-menu',
+				'--win-shortcut',
+				'--description', 'Instagram Image Downloader'
+			]
+		} else if (currentOs.isMacOsX()) {
+			installerType = 'dmg'
+			installerOptions = [
+				'--mac-package-identifier', 'com.instaimg.crawl',
+				'--description', 'Instagram Image Downloader'
+			]
+		}
 	}
 }

@@ -1,11 +1,11 @@
 .text-field {
     -fx-font-size: 10pt;
-    -fx-font-family: "D2Coding";
+    -fx-font-family: "D2Coding", "Menlo", "Monaco", monospace;
 }
 
 .text-area {
     -fx-font-size: 10pt;
-    -fx-font-family: "D2Coding";
+    -fx-font-family: "D2Coding", "Menlo", "Monaco", monospace;
 }
 
 #stopButton {

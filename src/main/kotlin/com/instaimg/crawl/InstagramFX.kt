@@ -4,11 +4,17 @@ import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.text.Font
 import javafx.stage.Stage
 
 class InstagramFX : Application() {
 
     override fun start(primaryStage: Stage) {
+        Font.loadFont(
+            checkNotNull(javaClass.classLoader.getResourceAsStream("font/Raleway-VariableFont_wght.ttf")) {
+                "Cannot find Raleway font on classpath"
+            }, 24.0
+        )
         val root = FXMLLoader.load<Parent>(
             checkNotNull(javaClass.getResource("instagramFX.fxml")) {
                 "Cannot find instagramFX.fxml on classpath"
