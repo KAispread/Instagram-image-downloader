@@ -2,6 +2,7 @@ package com.instaimg.crawl;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.Map;
 class JsoupTest {
     private final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
 
+    @Disabled("네트워크 통합 테스트")
     @Test
     void naver() throws IOException {
         Map<String, String> cookies = Jsoup.connect("https://www.naver.com/")
@@ -20,6 +22,7 @@ class JsoupTest {
         }
     }
 
+    @Disabled("Instagram 세션 필요 - 네트워크 통합 테스트")
     @Test
     void instaJson() throws IOException {
         String accept = Jsoup.connect("https://www.instagram.com/api/v1/feed/user/minn.__.ju/username/?count=100")
@@ -33,21 +36,6 @@ class JsoupTest {
                 .execute().body();
 
         System.out.println("accept = " + accept);
-    }
-
-    @Test
-    void instaProfileJson() throws ParseException {
-        String jsonData = Objects.requireNonNull(webClient.get()
-                .uri("/api/v1/feed/user/kiw.112/username/?count=100")
-                .accept(MediaType.APPLICATION_JSON)
-                .header("x-ig-app-id", "value")
-                .cookie("sessionId", "value")
-                .retrieve()
-                .toEntity(String.class).block()).getBody();
-        JSONParser parser = new JSONParser();
-        JSONObject parse = (JSONObject) parser.parse(jsonData);
-
-        System.out.println(parse.toJSONString());
     }
 
     @Test
