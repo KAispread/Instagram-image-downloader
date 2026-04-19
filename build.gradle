@@ -1,49 +1,23 @@
 plugins {
 	id 'org.jetbrains.kotlin.jvm' version '2.0.21'
-	id 'application'
-	id 'org.openjfx.javafxplugin' version '0.1.0'
-	id 'org.beryx.jlink' version '3.0.1'
-	id 'org.gradlex.extra-java-module-info' version '1.9'
+	id 'org.jetbrains.compose' version '1.6.11'
+	id 'org.jetbrains.kotlin.plugin.compose' version '2.0.21'
 }
-
-import org.gradle.internal.os.OperatingSystem
-
-def currentOs = OperatingSystem.current()
 
 group = 'com.instaimg'
 version = '1.0.0'
-
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
-}
 
 kotlin {
 	jvmToolchain(17)
 }
 
-javafx {
-	version = "17"
-	modules = ['javafx.controls', 'javafx.fxml']
-}
-
-application {
-	mainClass = 'com.instaimg.crawl.InstagramFX'
-	mainModule = 'com.instaimg.crawl'
-}
-
-tasks {
-	processResources {
-		duplicatesStrategy = DuplicatesStrategy.INCLUDE
-	}
-}
-
 repositories {
 	mavenCentral()
+	google()
 }
 
 dependencies {
+	implementation compose.desktop.currentOs
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
@@ -55,39 +29,28 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// json-simple 에 Automatic-Module-Name 을 추가하여 JPMS 모듈로 인식시킴
-// failOnMissingModuleInfo = false 로 나머지 비모듈 jar 는 unnamed module 로 처리
-extraJavaModuleInfo {
-	failOnMissingModuleInfo.set(false)
-	automaticModule('com.googlecode.json-simple:json-simple', 'json.simple')
-}
+compose.desktop {
+	application {
+		mainClass = 'com.instaimg.crawl.MainKt'
 
-jlink {
-	options = ['--strip-debug', '--compress=2', '--no-header-files', '--no-man-pages']
-	launcher {
-		name = 'InstagramDownloader'
-		jvmArgs = ['--add-opens', 'javafx.graphics/com.sun.javafx.application=ALL-UNNAMED']
-	}
-	forceMerge('kotlin-stdlib', 'annotations')
-	jpackage {
-		imageName = 'InstagramDownloader'
-		appVersion = '1.0.0'
-		vendor = 'com.instaimg'
+		nativeDistributions {
+			targetFormats(
+				org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
+				org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi
+			)
+			packageName = 'InstagramDownloader'
+			packageVersion = '1.0.0'
+			vendor = 'com.instaimg'
 
-		if (currentOs.isWindows()) {
-			installerType = 'msi'
-			installerOptions = [
-				'--win-dir-chooser',
-				'--win-menu',
-				'--win-shortcut',
-				'--description', 'Instagram Image Downloader'
-			]
-		} else if (currentOs.isMacOsX()) {
-			installerType = 'dmg'
-			installerOptions = [
-				'--mac-package-identifier', 'com.instaimg.crawl',
-				'--description', 'Instagram Image Downloader'
-			]
+			macOS {
+				bundleID = 'com.instaimg.crawl'
+				packageName = 'InstagramDownloader'
+			}
+			windows {
+				menuGroup = 'Instagram Downloader'
+				shortcut = true
+				dirChooser = true
+			}
 		}
 	}
 }

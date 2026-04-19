@@ -20,28 +20,14 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Add WiX Toolset v3 to PATH
-        shell: pwsh
-        run: |
-          $wixDir = Get-ChildItem "C:\Program Files (x86)" -Filter "WiX Toolset v3*" -ErrorAction SilentlyContinue |
-                    Sort-Object Name -Descending |
-                    Select-Object -First 1
-          if ($wixDir) {
-            "$($wixDir.FullName)\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-            Write-Host "WiX Toolset found: $($wixDir.FullName)"
-          } else {
-            Write-Error "WiX Toolset v3 not found on this runner."
-            exit 1
-          }
-
-      - name: Build MSI with jpackage
-        run: ./gradlew jpackage
+      - name: Build MSI
+        run: ./gradlew packageMsi
 
       - name: Upload MSI artifact
         uses: actions/upload-artifact@v4
         with:
           name: InstagramDownloader-msi-${{ github.run_number }}
-          path: build/jpackage/*.msi
+          path: build/compose/binaries/main/msi/*.msi
           if-no-files-found: error
           retention-days: 30
 
@@ -59,13 +45,13 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Build DMG with jpackage
-        run: ./gradlew jpackage
+      - name: Build DMG
+        run: ./gradlew packageDmg
 
       - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
         with:
           name: InstagramDownloader-dmg-${{ github.run_number }}
-          path: build/jpackage/*.dmg
+          path: build/compose/binaries/main/dmg/*.dmg
           if-no-files-found: error
           retention-days: 30
