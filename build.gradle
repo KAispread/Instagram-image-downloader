@@ -1,10 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.6'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'application'
-	id 'org.openjfx.javafxplugin' version '0.0.9'
-	id 'org.beryx.jlink' version '2.24.4'
+	id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 group = 'com.instaimg'
@@ -15,13 +12,8 @@ javafx {
 	modules = [ 'javafx.controls', 'javafx.fxml']
 }
 
-mainClassName = "com.instaimg.crawl.InstagramFX"
-
-jlink {
-	options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
-	launcher {
-		name = 'crawl'
-	}
+application {
+	mainClass = 'com.instaimg.crawl.InstagramFX'
 }
 
 tasks {
@@ -47,9 +39,11 @@ dependencies {
 	implementation 'org.seleniumhq.selenium:selenium-java:4.7.1'
 	implementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.13'
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compileOnly 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 

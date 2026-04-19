@@ -26,6 +26,8 @@ public class ImgUrlController {
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
     private static final String IMAGE_PREFIX = "IMAGE";
     private static final int MAX_IMAGE = 15;
+    private static final String SESSION_ID = "";
+    private static final String APP_ID = "936619743392459";
 
     public static boolean saveImgInLocal(String nickname, String filePath, int imgCount, TextArea process) throws ParseException, InterruptedException, IOException {
         setTextArea(process,"======" + nickname + ": image source parsing======");
@@ -79,9 +81,9 @@ public class ImgUrlController {
                     .userAgent(USER_AGENT)
                     .timeout(100000)
                     .ignoreContentType(true)
-                    .cookie("sessionid", value)
+                    .cookie("sessionid", SESSION_ID)
                     .header("Accept", "application/json")
-                    .header("x-ig-app-id", value)
+                    .header("x-ig-app-id", APP_ID)
                     .method(Connection.Method.GET)
                     .execute().body();
 
