@@ -22,36 +22,33 @@
 
 GitHub Actions 를 통해 master branch 에 변경사항이 push 될 때마다 Windows용 MSI 파일과 macOS용 DMG 파일이 자동으로 빌드됩니다.
 
-최신 설치 파일은 아래 링크에서 다운로드할 수 있습니다:
+최신 설치 파일은 아래 링크 또는 Release 섹션에서 다운로드 할 수 있습니다.
 
-🖇LINK -> [Actions - Build Installers](https://github.com/KAispread/Instagram-image-downloader/actions/workflows/build-installers.yml)
+🖇LINK -> [Release v0.0.2](https://github.com/KAispread/Instagram-image-downloader/releases/tag/v0.0.2)
 
-위 링크에서 가장 최근의 성공한 워크플로우를 선택한 뒤, **Artifacts** 섹션에서 운영체제에 맞는 파일을 다운로드합니다.
 
 &nbsp;
 ### 🪟 Windows (.msi)
 
-1. Artifacts 섹션에서 `InstagramDownloader-msi-{번호}` 를 다운로드합니다.
-2. 압축을 풀면 `InstagramDownloader-1.0.0.msi` 설치 파일이 있습니다.
-3. 파일을 실행하면 설치가 진행됩니다.
-4. 설치 완료 후 시작 메뉴에서 **InstagramDownloader** 를 실행합니다.
+1. `.msi` 파일을 다운로드합니다. (insta-downloader-windows-os-{version}.msi)
+2. 파일을 실행하면 설치가 진행됩니다.
+3. 설치 완료 후 시작 메뉴에서 **InstagramDownloader** 를 실행합니다.
 
 &nbsp;
 ### 🍎 macOS (.dmg)
 
-1. Artifacts 섹션에서 `InstagramDownloader-dmg-{번호}` 를 다운로드합니다.
-2. 압축을 풀면 `InstagramDownloader-1.0.0.dmg` 파일이 있습니다.
-3. DMG 파일을 더블클릭하여 마운트한 뒤, **InstagramDownloader** 아이콘을 Applications 폴더로 드래그합니다.
-4. Launchpad 또는 Applications 폴더에서 **InstagramDownloader** 를 실행합니다.
+1. `.dmg` 파일을 다운로드합니다. (insta-downloader-mac-os-{version}.dmg)
+2. DMG 파일을 더블클릭하여 마운트한 뒤, **InstagramDownloader** 아이콘을 Applications 폴더로 드래그합니다.
+3. Launchpad 또는 Applications 폴더에서 **InstagramDownloader** 를 실행합니다.
 
 > **macOS 보안 경고 대응**
 >
 > 처음 실행 시 "Apple이 확인할 수 없습니다" 경고가 표시될 수 있습니다.
 > 아래 방법으로 실행할 수 있습니다.
 >
-> **방법 1.** 앱 아이콘을 **우클릭(Control+클릭)** → **열기** → **열기** 버튼 클릭
+> <img width="400" alt="image" src="https://github.com/user-attachments/assets/86e26767-5433-4605-adb1-cf38cf77ddfd" />
 >
-> **방법 2.** 시스템 설정 → 개인정보 보호 및 보안 → 보안 섹션 → **"확인 없이 열기"** 클릭
+> **방법** : 시스템 설정 → 개인정보 보호 및 보안 → 보안 섹션 → **"확인 없이 열기"** 클릭
 
 &nbsp;
 ## 💡사용방법
