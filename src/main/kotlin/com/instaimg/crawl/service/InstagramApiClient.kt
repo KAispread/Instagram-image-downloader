@@ -2,6 +2,9 @@ package com.instaimg.crawl.service
 
 import com.instaimg.crawl.AppConstants
 import com.instaimg.crawl.json.CustomJsonParser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import org.jsoup.Connection
@@ -9,19 +12,19 @@ import org.jsoup.Jsoup
 
 class InstagramApiClient(private val sessionId: String = AppConstants.SESSION_ID) {
 
-    fun fetchImageUrls(nickname: String): List<String> {
+    suspend fun fetchImageUrls(nickname: String): List<String> {
         val urls = mutableListOf<String>()
         var nextMaxId = ""
         var remaining = AppConstants.MAX_PAGINATION
 
         while (remaining > 0) {
-            val page = fetchPage(nickname, nextMaxId)
+            val page = withContext(Dispatchers.IO) { fetchPage(nickname, nextMaxId) }
             urls += CustomJsonParser.getImageUrl(page)
 
             if (page.containsKey("next_max_id")) {
                 nextMaxId = page["next_max_id"].toString()
                 remaining--
-                Thread.sleep(AppConstants.API_DELAY_MS)
+                delay(AppConstants.API_DELAY_MS)
             } else {
                 break
             }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.instaimg.crawl.DownloadProgressListener
@@ -20,17 +21,19 @@ fun App() {
     var filePath by remember { mutableStateOf("") }
     var imgCount by remember { mutableStateOf("") }
     var log by remember { mutableStateOf("") }
-    var downloadThread by remember { mutableStateOf<MainApplication?>(null) }
+    var downloadApp by remember { mutableStateOf<MainApplication?>(null) }
 
+    val scope = rememberCoroutineScope()
     val service = remember { InstagramImageService(InstagramApiClient(), ImageDownloader()) }
 
-    val listener = remember {
+    // scope는 Compose main dispatcher에 바인딩 → scope.launch는 항상 main 스레드에서 실행
+    val listener = remember(scope) {
         object : DownloadProgressListener {
-            override fun onMessage(message: String) { log += "$message\n" }
-            override fun onError(title: String, message: String) { log += "[$title] $message\n" }
-            override fun onComplete(title: String, message: String) { log += "[$title] $message\n" }
-            override fun onAbort() { log += "다운로드가 중단되었습니다.\n" }
-            override fun onClearLog() { log = "" }
+            override fun onMessage(message: String) { scope.launch { log += "$message\n" } }
+            override fun onError(title: String, message: String) { scope.launch { log += "[$title] $message\n" } }
+            override fun onComplete(title: String, message: String) { scope.launch { log += "[$title] $message\n" } }
+            override fun onAbort() { scope.launch { log += "다운로드가 중단되었습니다.\n" } }
+            override fun onClearLog() { scope.launch { log = "" } }
         }
     }
 
@@ -70,16 +73,13 @@ fun App() {
                 Button(onClick = {
                     val count = imgCount.takeIf { it.isNotBlank() }?.toIntOrNull() ?: Int.MAX_VALUE
                     log = "***Nickname : $nickname\n***FilePath : $filePath\n"
-                    downloadThread = MainApplication(nickname, filePath, count, service, listener).also {
-                        it.isDaemon = true
-                        it.start()
-                    }
+                    downloadApp = MainApplication(nickname, filePath, count, service, listener).also { it.start() }
                 }) {
                     Text("Download")
                 }
 
                 Button(
-                    onClick = { downloadThread?.interrupt() },
+                    onClick = { downloadApp?.cancel() },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFFB700))
                 ) {
                     Text("Stop")

@@ -37,6 +37,6 @@ class AppConstantsTest {
         assertTrue(AppConstants.MAX_PAGINATION > 0)
         assertTrue(AppConstants.IMAGES_PER_REQUEST > 0)
         assertTrue(AppConstants.API_DELAY_MS > 0)
-        assertTrue(AppConstants.IMAGE_DOWNLOAD_DELAY_MS > 0)
+        assertTrue(AppConstants.CONCURRENT_DOWNLOADS > 0)
     }
 }

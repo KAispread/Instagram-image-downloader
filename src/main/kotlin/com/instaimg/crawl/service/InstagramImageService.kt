@@ -1,14 +1,20 @@
 package com.instaimg.crawl.service
 
+import com.instaimg.crawl.AppConstants
 import com.instaimg.crawl.DownloadProgressListener
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import java.io.IOException
+import java.util.concurrent.atomic.AtomicInteger
 
 class InstagramImageService(
     private val apiClient: InstagramApiClient = InstagramApiClient(),
     private val downloader: ImageDownloader = ImageDownloader()
 ) {
 
-    fun downloadImages(
+    suspend fun downloadImages(
         nickname: String,
         targetDir: String,
         maxCount: Int,
@@ -28,18 +34,28 @@ class InstagramImageService(
         listener.onMessage("============PARSING IS DONE=============\n")
         listener.onMessage("======START DOWNLOADING THE IMAGES======")
 
-        imageUrls.take(maxCount).forEachIndexed { index, url ->
-            val count = index + 1
-            try {
-                downloader.download(url, targetDir, count)
-            } catch (e: IOException) {
-                listener.onError("오류", "잘못된 폴더 경로입니다.")
-                listener.onClearLog()
-                return
+        val targetUrls = imageUrls.take(maxCount)
+        val semaphore = Semaphore(AppConstants.CONCURRENT_DOWNLOADS)
+        val downloadedCount = AtomicInteger(0)
+
+        try {
+            coroutineScope {
+                targetUrls.forEachIndexed { index, url ->
+                    launch {
+                        semaphore.withPermit {
+                            downloader.download(url, targetDir, index + 1)
+                            val count = downloadedCount.incrementAndGet()
+                            if (count % 10 == 0) {
+                                listener.onMessage("$count images have been downloaded")
+                            }
+                        }
+                    }
+                }
             }
-            if (count % 10 == 0) {
-                listener.onMessage("$count images have been downloaded")
-            }
+        } catch (e: IOException) {
+            listener.onError("오류", "잘못된 폴더 경로입니다.")
+            listener.onClearLog()
+            return
         }
 
         listener.onMessage("============DOWNLOAD COMPLETE===========")
