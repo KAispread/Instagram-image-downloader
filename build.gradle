@@ -1,15 +1,26 @@
 plugins {
-	id 'java'
+	id 'org.jetbrains.kotlin.jvm' version '2.0.21'
 	id 'application'
 	id 'org.openjfx.javafxplugin' version '0.1.0'
+	id 'org.beryx.jlink' version '3.0.1'
 }
 
 group = 'com.instaimg'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+kotlin {
+	jvmToolchain(17)
+}
 
 javafx {
 	version = "17"
-	modules = [ 'javafx.controls', 'javafx.fxml']
+	modules = ['javafx.controls', 'javafx.fxml']
 }
 
 application {
@@ -22,31 +33,41 @@ tasks {
 	}
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 repositories {
 	mavenCentral()
 }
 
 dependencies {
 	implementation 'org.jsoup:jsoup:1.15.3'
-
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-	implementation 'org.seleniumhq.selenium:selenium-java:4.7.1'
-	implementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.13'
 
-	compileOnly 'org.projectlombok:lombok:1.18.30'
-	annotationProcessor 'org.projectlombok:lombok:1.18.30'
-
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jlink {
+	options = ['--strip-debug', '--compress=2', '--no-header-files', '--no-man-pages']
+	launcher {
+		name = 'InstagramDownloader'
+		jvmArgs = [
+			'--add-opens', 'javafx.graphics/com.sun.javafx.application=ALL-UNNAMED',
+			'--add-reads', 'org.jsoup=ALL-UNNAMED'
+		]
+	}
+	forceMerge('json-simple', 'annotations', 'kotlin')
+	jpackage {
+		installerType = 'msi'
+		appVersion = '1.0.0'
+		vendor = 'com.instaimg'
+		installerOptions = [
+			'--win-dir-chooser',
+			'--win-menu',
+			'--win-shortcut',
+			'--description', 'Instagram Image Downloader'
+		]
+	}
 }
