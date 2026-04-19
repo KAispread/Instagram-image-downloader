@@ -1,0 +1,46 @@
+name: Build MSI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-msi:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Add WiX Toolset v3 to PATH
+        shell: pwsh
+        run: |
+          $wixDir = Get-ChildItem "C:\Program Files (x86)" -Filter "WiX Toolset v3*" -ErrorAction SilentlyContinue |
+                    Sort-Object Name -Descending |
+                    Select-Object -First 1
+          if ($wixDir) {
+            "$($wixDir.FullName)\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            Write-Host "WiX Toolset found: $($wixDir.FullName)"
+          } else {
+            Write-Error "WiX Toolset v3 not found on this runner."
+            exit 1
+          }
+
+      - name: Build MSI with jpackage
+        run: ./gradlew jpackage
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: InstagramDownloader-${{ github.run_number }}
+          path: build/jpackage/*.msi
+          if-no-files-found: error
+          retention-days: 30

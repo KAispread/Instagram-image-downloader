@@ -61,6 +61,7 @@ jlink {
 	forceMerge('json-simple', 'annotations', 'kotlin')
 	jpackage {
 		installerType = 'msi'
+		imageName = 'InstagramDownloader'
 		appVersion = '1.0.0'
 		vendor = 'com.instaimg'
 		installerOptions = [
